@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Music Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background 1s ease;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .music-player {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(40px);
+            border-radius: 32px;
+            padding: 40px;
+            width: 420px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .device-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .album-art {
+            width: 320px;
+            height: 320px;
+            border-radius: 24px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6em;
+            color: white;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .album-art::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+            opacity: 0.5;
+        }
+
+        .song-info {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .song-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .artist-album {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+        }
+
+        .progress-section {
+            margin: 35px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .progress {
+            height: 100%;
+            background: white;
+            width: 0%;
+            border-radius: 2px;
+            transition: width 0.1s ease;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        .prev-btn, .next-btn {
+            font-size: 2.2em;
+        }
+
+        .play-btn {
+            font-size: 3.5em;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .volume-icon {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+        }
+
+        .volume-slider {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .playlist-container {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(40px);
+            border-radius: 32px;
+            padding: 35px;
+            width: 380px;
+            max-height: 700px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .playlist-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .playlist-title {
+            font-size: 1.6em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .add-song-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .add-song-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .playlist {
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .playlist::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .playlist::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .playlist::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .playlist-item {
+            padding: 16px 20px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(8px);
+        }
+
+        .playlist-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .song-icon {
+            font-size: 1.8em;
+            width: 40px;
+            text-align: center;
+        }
+
+        .song-details {
+            flex: 1;
+        }
+
+        .song-item-title {
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+
+        .song-item-artist {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .empty-playlist {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .empty-playlist p {
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .airplay-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .spotify-icon {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: #1DB954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        /* Color themes for different songs */
+        .theme-love { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%); }
+        .theme-perfect { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .theme-bang { background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%); }
+        .theme-default { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .music-player, .playlist-container {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="theme-default">
+    <div class="container">
+        <div class="music-player">
+            <div class="device-label">
+                📱 iPhone
+            </div>
+            
+            <div class="album-art" id="albumArt">🎵</div>
+            
+            <div class="song-info">
+                <div class="song-title" id="songTitle">เลือกเพลงที่ต้องการฟัง</div>
+                <div class="artist-album" id="artistName">Music Player</div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="time-info">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">0:00</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn prev-btn" id="prevBtn">⏮</button>
+                <button class="control-btn play-btn" id="playBtn">▶</button>
+                <button class="control-btn next-btn" id="nextBtn">⏭</button>
+            </div>
+
+            <div class="volume-container">
+                <span class="volume-icon">🔊</span>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+                <span class="volume-icon">🔊</span>
+            </div>
+
+            <button class="airplay-btn">📡</button>
+            
+            <div class="spotify-icon">♪</div>
+        </div>
+
+        <div class="playlist-container">
+            <div class="playlist-header">
+                <div class="playlist-title">รายการเพลง</div>
+                <button class="add-song-btn" onclick="document.getElementById('fileInput').click()">
+                    ➕ เพิ่มเพลง
+                </button>
+                <input type="file" id="fileInput" accept="audio/*" multiple style="display: none;">
+            </div>
+            
+            <div class="playlist" id="playlist">
+                <div class="empty-playlist">
+                    <p>ยังไม่มีเพลงในรายการ</p>
+                    <p style="font-size: 0.9em;">คลิกปุ่ม "เพิ่มเพลง" เพื่อเลือกไฟล์เพลง MP3</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script>
+        class MusicPlayer {
+            constructor() {
+                this.audio = document.getElementById('audioPlayer');
+                this.playBtn = document.getElementById('playBtn');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.progress = document.getElementById('progress');
+                this.progressBar = document.getElementById('progressBar');
+                this.currentTime = document.getElementById('currentTime');
+                this.totalTime = document.getElementById('totalTime');
+                this.volumeSlider = document.getElementById('volumeSlider');
+                this.songTitle = document.getElementById('songTitle');
+                this.artistName = document.getElementById('artistName');
+                this.albumArt = document.getElementById('albumArt');
+                this.playlist = document.getElementById('playlist');
+                this.fileInput = document.getElementById('fileInput');
+                
+                // เพลงตัวอย่างพร้อมธีมสี
+                this.songs = [
+                    {
+                        title: "เพลงรัก",
+                        artist: "Acoustic Breeze",
+                        url: "./เพลงรัก.mp3",
+                        albumArt: "❤️",
+                        theme: "theme-love"
+                    },
+                    {
+                        title: "Perfect",
+                        artist: "Ed Sheeran",
+                        url: "./perfect.mp3",
+                        albumArt: "💙",
+                        theme: "theme-perfect"
+                    },
+                    {
+                        title: "Bang Bang Bang",
+                        artist: "BIGBANG",
+                        url: "./bangbangbang.mp3",
+                        albumArt: "🔥",
+                        theme: "theme-bang"
+                    }
+                ];
+                
+                this.currentSongIndex = -1;
+                this.isPlaying = false;
+                
+                this.initializeEvents();
+                this.audio.volume = 0.5;
+                this.renderPlaylist();
+                
+                if (this.songs.length > 0) {
+                    this.loadSong(0);
+                }
+            }
+
+            initializeEvents() {
+                this.playBtn.addEventListener('click', () => this.togglePlay());
+                this.prevBtn.addEventListener('click', () => this.previousSong());
+                this.nextBtn.addEventListener('click', () => this.nextSong());
+                
+                this.progressBar.addEventListener('click', (e) => this.seek(e));
+                this.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
+                
+                this.audio.addEventListener('timeupdate', () => this.updateProgress());
+                this.audio.addEventListener('ended', () => this.nextSong());
+                this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
+                
+                this.fileInput.addEventListener('change', (e) => this.loadFiles(e.target.files));
+            }
+
+            loadFiles(files) {
+                for (let file of files) {
+                    if (file.type.startsWith('audio/')) {
+                        const url = URL.createObjectURL(file);
+                        const fileName = file.name.replace(/\.[^/.]+$/, "");
+                        
+                        // กำหนดธีมสีตามชื่อเพลง
+                        let theme = "theme-default";
+                        let albumArt = "🎵";
+                        
+                        if (fileName.includes('รัก') || fileName.toLowerCase().includes('love')) {
+                            theme = "theme-love";
+                            albumArt = "❤️";
+                        } else if (fileName.toLowerCase().includes('perfect')) {
+                            theme = "theme-perfect";
+                            albumArt = "💙";
+                        } else if (fileName.toLowerCase().includes('bang')) {
+                            theme = "theme-bang";
+                            albumArt = "🔥";
+                        }
+                        
+                        this.songs.push({
+                            title: fileName,
+                            artist: "Local File",
+                            url: url,
+                            file: file,
+                            albumArt: albumArt,
+                            theme: theme
+                        });
+                    }
+                }
+                this.renderPlaylist();
+                
+                if (this.currentSongIndex === -1 && this.songs.length > 0) {
+                    this.loadSong(0);
+                }
+            }
+
+            renderPlaylist() {
+                if (this.songs.length === 0) {
+                    this.playlist.innerHTML = `
+                        <div class="empty-playlist">
+                            <p>ยังไม่มีเพลงในรายการ</p>
+                            <p style="font-size: 0.9em;">คลิกปุ่ม "เพิ่มเพลง" เพื่อเลือกไฟล์เพลง MP3</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const playlistHtml = this.songs.map((song, index) => 
+                    `<div class="playlist-item ${index === this.currentSongIndex ? 'active' : ''}" 
+                          onclick="player.loadSong(${index})">
+                        <div class="song-icon">${song.albumArt}</div>
+                        <div class="song-details">
+                            <div class="song-item-title">${song.title}</div>
+                            <div class="song-item-artist">${song.artist}</div>
+                        </div>
+                    </div>`
+                ).join('');
+                
+                this.playlist.innerHTML = playlistHtml;
+            }
+
+            loadSong(index) {
+                if (index >= 0 && index < this.songs.length) {
+                    this.currentSongIndex = index;
+                    const song = this.songs[index];
+                    
+                    this.audio.src = song.url;
+                    this.songTitle.textContent = song.title;
+                    this.artistName.textContent = song.artist;
+                    this.albumArt.textContent = song.albumArt || '🎵';
+                    
+                    // เปลี่ยนธีมสีตามเพลง
+                    document.body.className = song.theme || 'theme-default';
+                    
+                    this.renderPlaylist();
+                }
+            }
+
+            togglePlay() {
+                if (!this.audio.src) {
+                    alert('กรุณาเลือกเพลงก่อน');
+                    return;
+                }
+
+                if (this.isPlaying) {
+                    this.audio.pause();
+                    this.playBtn.textContent = '▶';
+                } else {
+                    this.audio.play();
+                    this.playBtn.textContent = '⏸';
+                }
+                this.isPlaying = !this.isPlaying;
+            }
+
+            previousSong() {
+                if (this.songs.length === 0) return;
+                const newIndex = this.currentSongIndex > 0 ? this.currentSongIndex - 1 : this.songs.length - 1;
+                this.loadSong(newIndex);
+                if (this.isPlaying) {
+                    setTimeout(() => this.audio.play(), 100);
+                }
+            }
+
+            nextSong() {
+                if (this.songs.length === 0) return;
+                const newIndex = this.currentSongIndex < this.songs.length - 1 ? this.currentSongIndex + 1 : 0;
+                this.loadSong(newIndex);
+                if (this.isPlaying) {
+                    setTimeout(() => this.audio.play(), 100);
+                }
+            }
+
+            seek(e) {
+                if (!this.audio.duration) return;
+                const clickX = e.offsetX;
+                const width = this.progressBar.offsetWidth;
+                const duration = this.audio.duration;
+                this.audio.currentTime = (clickX / width) * duration;
+            }
+
+            setVolume(value) {
+                this.audio.volume = value / 100;
+            }
+
+            updateProgress() {
+                if (!this.audio.duration) return;
+                
+                const progress = (this.audio.currentTime / this.audio.duration) * 100;
+                this.progress.style.width = progress + '%';
+                
+                this.currentTime.textContent = this.formatTime(this.audio.currentTime);
+            }
+
+            updateDuration() {
+                this.totalTime.textContent = this.formatTime(this.audio.duration);
+            }
+
+            formatTime(seconds) {
+                if (isNaN(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        const player = new MusicPlayer();
+    </script>
+</body>
+</html>
