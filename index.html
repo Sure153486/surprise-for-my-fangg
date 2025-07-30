@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Surprise ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Kanit:wght@300;400;600&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(-45deg, #ff6b6b, #ff8e8e, #ffa8a8, #ffcccb);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+        .welcome-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: titleGlow 3s ease forwards;
+        }
+        @keyframes titleGlow {
+            0% { opacity: 0; transform: translateY(50px) scale(0.8);}
+            100% { opacity: 1; transform: translateY(0) scale(1);}
+        }
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards 1s;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .enter-button {
+            background: linear-gradient(45deg, #ffffff, #ffeef0);
+            color: #ff6b6b;
+            border: 3px solid #ff6b6b;
+            padding: 20px 50px;
+            border-radius: 60px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.3);
+            transition: all 0.4s ease;
+            opacity: 0;
+            animation: buttonBounce 2s ease forwards 1.5s;
+            position: relative;
+            overflow: hidden;
+        }
+        .enter-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+        .enter-button:hover::before { left: 100%; }
+        .enter-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 45px rgba(255, 107, 107, 0.5);
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-color: white;
+        }
+        @keyframes buttonBounce {
+            0% { opacity: 0; transform: translateY(30px) scale(0.8);}
+            70% { transform: translateY(-10px) scale(1.05);}
+            100% { opacity: 1; transform: translateY(0) scale(1);}
+        }
+        .floating-elements {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;
+        }
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 2rem;
+            animation: floatUp 8s linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0;}
+            10% { opacity: 1;}
+            90% { opacity: 1;}
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0;}
+        }
+        .main-content { display: none; }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .main-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin: 40px 0;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards;
+        }
+        .love-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin: 30px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            transform: translateY(50px);
+            opacity: 0;
+            animation: cardSlideIn 1.5s ease forwards;
+        }
+        .love-card:nth-child(odd) { animation-delay: 0.5s; }
+        .love-card:nth-child(even) { animation-delay: 1s; }
+        .card-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+        .card-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        .heart {
+            display: inline-block;
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin: 0 10px;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .surprise-button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+        .surprise-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+        }
+        .hidden-message {
+            display: none;
+            background: linear-gradient(45deg, #ffd89b, #ffcccb);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            animation: revealMessage 1s ease forwards;
+        }
+        @keyframes revealMessage {
+            from { opacity: 0; transform: scale(0.8);}
+            to { opacity: 1; transform: scale(1);}
+        }
+        .sparkle {
+            display: inline-block;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1);}
+            50% { opacity: 0.5; transform: scale(1.2);}
+        }
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 8px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 20px auto;
+            background: linear-gradient(45deg, #ff6b6b, #ffcccb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            animation: photoGlow 3s ease-in-out infinite;
+        }
+        @keyframes photoGlow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
+            50% { box-shadow: 0 10px 40px rgba(255, 107, 107, 0.4);}
+        }
+        /* Music Player Styles */
+        .music-player {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 30px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        .music-player::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e, #ffa8a8);
+            background-size: 200% 100%;
+            animation: musicGradient 3s ease infinite;
+        }
+        @keyframes musicGradient {
+            0%, 100% { background-position: 0% 50%;}
+            50% { background-position: 100% 50%;}
+        }
+        .music-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .song-info { text-align: center; margin-bottom: 20px;}
+        .song-name { font-size: 1.1rem; font-weight: 600; color: #444; margin-bottom: 5px;}
+        .artist-name { font-size: 0.9rem; color: #888;}
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .control-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.4);
+        }
+        .control-btn.play-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 1.4rem;
+        }
+        .progress-container { margin: 20px 0;}
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 107, 107, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.1s ease;
+        }
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 8px;
+        }
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .volume-icon { color: #ff6b6b; font-size: 1.1rem;}
+        .volume-slider {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 107, 107, 0.2);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            cursor: pointer;
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            cursor: pointer;
+            border: none;
+        }
+        .playlist {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 107, 107, 0.2);
+        }
+        .playlist-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .song-item {
+            padding: 8px 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .song-item:hover {
+            background: rgba(255, 107, 107, 0.2);
+            transform: translateX(5px);
+        }
+        .song-item.active {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: end;
+            height: 40px;
+            gap: 2px;
+            margin: 15px 0;
+        }
+        .bar {
+            width: 3px;
+            background: linear-gradient(to top, #ff6b6b, #ff8e8e);
+            border-radius: 2px;
+            animation: musicBars 1s ease-in-out infinite;
+        }
+        .bar:nth-child(1) { animation-delay: 0.1s; }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.3s; }
+        .bar:nth-child(4) { animation-delay: 0.4s; }
+        .bar:nth-child(5) { animation-delay: 0.5s; }
+        @keyframes musicBars {
+            0%, 100% { height: 10px; }
+            50% { height: 30px; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        @keyframes cardSlideIn {
+            to { opacity: 1; transform: translateY(0);}
+        }
+        @media (max-width: 768px) {
+            .welcome-title { font-size: 3.5rem; }
+            .welcome-subtitle { font-size: 1.2rem; padding: 0 20px;}
+            .enter-button { padding: 18px 35px; font-size: 1.2rem;}
+            .main-title { font-size: 3rem;}
+            .love-card { padding: 25px 20px; margin: 20px 10px;}
+            .card-title { font-size: 2rem;}
+            .card-content { font-size: 1.1rem;}
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements"></div>
+    <!-- Audio Player (hidden) -->
+    <audio id="audioPlayer"></audio>
+    <!-- หน้าแรก -->
+    <div id="welcomeScreen" class="welcome-screen">
+        <h1 class="welcome-title">Something Special</h1>
+        <p class="welcome-subtitle">มีบางอย่างพิเศษรออยู่ข้างใน... 💕</p>
+        <button class="enter-button" onclick="enterSurprise()">
+            กดเลยฟ่างงงง ✨
+        </button>
+    </div>
+    <!-- หน้าหลัก -->
+    <div id="mainContent" class="main-content">
+        <div class="container">
+            <h1 class="main-title">สำหรับคนพิเศษของเนส</h1>
+            <!-- Music Player -->
+            <div class="music-player">
+                <h2 class="music-title">เพลงสำหรับฟ่าง 🎵</h2>
+                <div class="song-info">
+                    <div class="song-name" id="songName">เลือกเพลงจาก Playlist </div>
+                    <div class="artist-name" id="artistName">คลิกเพลงที่ชอบด้านล่าง</div>
+                </div>
+                <div class="visualizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <div class="music-controls">
+                    <button class="control-btn" onclick="previousSong()">⏮️</button>
+                    <button class="control-btn play-btn" id="playBtn" onclick="togglePlay()">▶️</button>
+                    <button class="control-btn" onclick="nextSong()">⏭️</button>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" onclick="setProgress(event)">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="time-info">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+                <div class="volume-container">
+                    <span class="volume-icon">🔊</span>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70" onchange="setVolume(this.value)">
+                </div>
+                <div class="playlist">
+                    <div class="playlist-title">🎵 Romantic Playlist</div>
+                    <div class="song-list">
+                        <div class="song-item" onclick="selectSong(0)">
+                            🎵 เพลงรัก
+                        </div>
+                        <div class="song-item" onclick="selectSong(1)">
+                            💕 Perfect - Ed Sheeran
+                        </div>
+                          <div class="song-item" onclick="selectSong(2)">
+                            💃 bangbangbang
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="love-card">
+                <h2 class="card-title">ข้อความ <span class="heart">❤️</span></h2>
+                <div class="photo-frame">💕</div>
+                <p class="card-content">
+                    วันที่ได้อยู่กับฟ่าง คือวันที่ดี<br>
+                    เหมือนจะมีอะไรเกิดขึ้นตลอดเวลาเลย5555<br>
+                    ขอบคุณที่เป็นคนพิเศษในชีวิตเรานะ <span class="sparkle">✨</span>
+                </p>
+            </div>
+            <div class="love-card">
+                <h2 class="card-title">😺😺😺 <span class="heart">💖</span></h2>
+                <div class="card-content">
+                    รอยยิ้ม <span class="heart">💝</span><br>
+                    เสียงหัวเราะที่เร้าใจ ขำอร่อย <span class="heart">🤣</span><br>
+                    ความใจดีของฟ่าง <span class="heart">🌟</span><br>
+                    🐹 <span class="heart">💕</span>
+                </div>
+            </div>
+            <button class="surprise-button" onclick="showSurprise()">
+                คลิกเพื่อดูข้อความพิเศษ! <span class="sparkle">✨</span>
+            </button>
+            <div id="hiddenMessage" class="hidden-message">
+                <h2 class="card-title">ข้อความลับ <span class="heart">💝</span></h2>
+                <p class="card-content">
+                    <strong>_______________________________</strong><br>
+                    <strong>❤️❤️❤️❤️❤️❤️❤️❤️❤️</strong><br>
+                    <strong>_______________________________</strong><br><br>
+                    <span class="sparkle">🌟</span> <em>คุณฟ่าง</em> <span class="sparkle">🌟</span>
+                </p>
+            </div>
+            <div class="love-card">
+                <h2 class="card-title">สัญญา <span class="heart">🤝</span></h2>
+                <div class="card-content">
+                    สัญญาว่าจะค่อยฟังเรื่องราวของฟ่างเสมอ<br>
+                    จะพาไปซื้อเค้ก<br>
+                    และจะทำให้เธอมีความสุขเสมอ<br>
+                    <strong>เพราะฟ่างสมควรได้รับสิ่งดีๆ</strong> <span class="sparkle">👑</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // ตัวอย่าง playlist พร้อมไฟล์เสียง (แก้ src เป็นชื่อไฟล์หรือ URL จริงตามที่คุณมี)
+        const playlist = [
+            { name: "เพลงรัก", artist: "<3", duration: 180, src: "เพลงรัก.mp3" },
+            { name: "Perfect", artist: "Ed Sheeran", duration: 203, src: "perfect.mp3" },
+            { name: "bangbangbang", artist: "Ed Sheeran", duration: 203, src: "bangbangbang.mp3" },
+        ];
+        // Music Player Variables
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        let volume = 0.7;
+        const audio = document.getElementById('audioPlayer');
+        // Load default volume
+        audio.volume = volume;
+        document.getElementById('volumeSlider').value = volume * 100;
+
+        function selectSong(index) {
+            currentSongIndex = index;
+            const song = playlist[index];
+            document.getElementById('songName').textContent = song.name;
+            document.getElementById('artistName').textContent = song.artist;
+            document.getElementById('duration').textContent = formatTime(song.duration);
+            audio.src = song.src;
+            audio.currentTime = 0;
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('currentTime').textContent = '0:00';
+            document.querySelectorAll('.song-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+            if (isPlaying) play();
+        }
+        function togglePlay() {
+            if (!playlist[currentSongIndex]) {
+                alert('กรุณาเลือกเพลงจาก Playlist ก่อนครับ 🎵');
+                return;
+            }
+            if (isPlaying) {
+                pause();
+                document.getElementById('playBtn').textContent = '▶️';
+            } else {
+                play();
+                document.getElementById('playBtn').textContent = '⏸️';
+            }
+            isPlaying = !isPlaying;
+        }
+        function play() {
+            audio.volume = volume;
+            audio.play();
+            isPlaying = true;
+        }
+        function pause() {
+            audio.pause();
+            isPlaying = false;
+        }
+        function previousSong() {
+            currentSongIndex = currentSongIndex > 0 ? currentSongIndex - 1 : playlist.length - 1;
+            selectSong(currentSongIndex);
+            if (isPlaying) play();
+        }
+        function nextSong() {
+            currentSongIndex = currentSongIndex < playlist.length - 1 ? currentSongIndex + 1 : 0;
+            selectSong(currentSongIndex);
+            if (isPlaying) play();
+        }
+        function setVolume(value) {
+            volume = value / 100;
+            audio.volume = volume;
+        }
+        audio.ontimeupdate = function() {
+            if (!isNaN(audio.duration) && audio.duration > 0) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('progressFill').style.width = progressPercent + '%';
+                document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+                document.getElementById('duration').textContent = formatTime(audio.duration);
+            }
+        };
+        audio.onended = function() {
+            nextSong();
+        };
+        function setProgress(event) {
+            if (!audio.src) return;
+            const progressBar = event.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (event.clientX - rect.left) / rect.width;
+            if (!isNaN(audio.duration)) {
+                audio.currentTime = percent * audio.duration;
+            }
+        }
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            const hearts = ['💖', '💕', '💝', '❤️', '💗'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            document.querySelector('.floating-elements').appendChild(heart);
+            setTimeout(() => { if (heart.parentNode) heart.remove(); }, 8000);
+        }
+        setInterval(createFloatingHeart, 1000);
+        function enterSurprise() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const mainContent = document.getElementById('mainContent');
+            welcomeScreen.style.opacity = '0';
+            welcomeScreen.style.transform = 'scale(0.95)';
+            welcomeScreen.style.transition = 'all 1s ease';
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                mainContent.style.opacity = '0';
+                mainContent.style.transform = 'scale(1.05)';
+                mainContent.style.transition = 'all 1s ease';
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                    mainContent.style.transform = 'scale(1)';
+                }, 50);
+                for(let i = 0; i < 15; i++) {
+                    setTimeout(() => { createWelcomeHeart(); }, i * 100);
+                }
+            }, 1000);
+        }
+        function createWelcomeHeart() {
+            const heart = document.createElement('div');
+            const hearts = ['💖', '💕', '💝', '❤️', '💗', '🌟', '✨'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.position = 'fixed';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.top = Math.random() * 100 + '%';
+            heart.style.fontSize = (Math.random() * 1 + 1.5) + 'rem';
+            heart.style.zIndex = '1000';
+            heart.style.pointerEvents = 'none';
+            heart.style.animation = 'welcomeSparkle 3s ease-out forwards';
+            document.body.appendChild(heart);
+            setTimeout(() => { if (heart.parentNode) heart.remove(); }, 3000);
+        }
+        function showSurprise() {
+            const hiddenMessage = document.getElementById('hiddenMessage');
+            const button = document.querySelector('.surprise-button');
+            hiddenMessage.style.display = 'block';
+            button.style.display = 'none';
+            for(let i = 0; i < 25; i++) {
+                setTimeout(() => { createSpecialHeart(); }, i * 80);
+            }
+        }
+        function createSpecialHeart() {
+            const heart = document.createElement('div');
+            const hearts = ['💝', '💖', '💕', '❤️', '💗'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.position = 'fixed';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.top = '50%';
+            heart.style.fontSize = (Math.random() * 1 + 1.5) + 'rem';
+            heart.style.zIndex = '1000';
+            heart.style.pointerEvents = 'none';
+            heart.style.animation = 'heartExplode 2.5s ease-out forwards';
+            document.body.appendChild(heart);
+            setTimeout(() => { if (heart.parentNode) heart.remove(); }, 2500);
+        }
+        // เพิ่ม CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes heartExplode {
+                0% { transform: scale(0) rotate(0deg); opacity: 1;}
+                50% { transform: scale(1.5) rotate(180deg); opacity: 1;}
+                100% { transform: scale(0) rotate(360deg); opacity: 0;}
+            }
+            @keyframes welcomeSparkle {
+                0% { transform: scale(0) rotate(0deg); opacity: 0;}
+                50% { transform: scale(1.2) rotate(180deg); opacity: 1;}
+                100% { transform: scale(0.8) rotate(360deg); opacity: 0;}
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
